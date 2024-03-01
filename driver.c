@@ -28,38 +28,46 @@ int main() {
     // Load certificate from a buffer:
     const unsigned char* buf_ptr = secret_certificate;
     X509* cert = d2i_X509(NULL, &buf_ptr, secret_certificate_len);
+    if (!cert) {
+        return 1;
+    }
 
     X509_VERIFY_PARAM* param = X509_VERIFY_PARAM_new();
     if (!param) {
-        return 1;
+        return 2;
     }
     // Skip expiration time check to avoid unsupported syscalls
     ret = X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_NO_CHECK_TIME);
     if (!ret) {
-        return 1;
+        return 3;
     }
 
     X509_STORE* store = X509_STORE_new();
     if (!store) {
-        return 1;
+        return 4;
     }
     ret = X509_STORE_set1_param(store, param);
     if (!ret) {
-        return 1;
+        return 5;
     }
 
     X509_STORE_CTX* ctx = X509_STORE_CTX_new();
     if (!ctx) {
-        return 1;
+        return 6;
     }
     ret = X509_STORE_CTX_init(ctx, store, cert, NULL);
     if (!ret) {
-        return 1;
+        return 7;
     }
 
     ret = X509_verify_cert(ctx);
     if (!ret) {
-        return 1;
+        //int err = X509_STORE_CTX_get_error(ctx);
+        //int depth = X509_STORE_CTX_get_error_depth(ctx);
+        //__cc_trace_exec("verify_cert error", err, depth, 0, 0);
+        //const char* err_str = X509_verify_cert_error_string(err);
+        //__cc_trace(err_str);
+        return 8;
     }
 
     return 0;
