@@ -1,3 +1,4 @@
+#include <openssl/conf.h>
 #include <openssl/pem.h>
 #include <openssl/x509_vfy.h>
 
@@ -20,6 +21,9 @@ extern const size_t secret_certificate_len;
 
 int main() {
     int ret;
+
+    // Disable automatic config file loading
+    OPENSSL_no_config();
 
     // Load certificate from a buffer:
     const unsigned char* buf_ptr = secret_certificate;
