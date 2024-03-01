@@ -1,6 +1,20 @@
 #include <openssl/pem.h>
 #include <openssl/x509_vfy.h>
 
+#ifndef FROMAGER_NATIVE
+# include <fromager.h>
+#else
+# include <stdio.h>
+# include <stdint.h>
+static void __cc_trace_exec(const char* s,
+        uintptr_t arg0, uintptr_t arg1, uintptr_t arg2, uintptr_t arg3) {
+    fprintf(stderr, "[FUNC] %s(%lx, %lx, %lx, %lx)\n", s, arg0, arg1, arg2, arg3);
+}
+static void __cc_trace(const char* s) {
+    fprintf(stderr, "TRACESTR %s\n", s);
+}
+#endif
+
 extern const uint8_t secret_certificate[512];
 extern const size_t secret_certificate_len;
 
